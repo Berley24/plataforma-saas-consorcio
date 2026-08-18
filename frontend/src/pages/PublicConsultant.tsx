@@ -10,13 +10,31 @@ import {
 import './public.css';
 
 // ============ Navbar ============
+function LogoMark({ content, size }: { content: PageContent; size?: 'sm' | 'md' }) {
+  if (content.logo) {
+    return (
+      <img
+        className={`pub-logo ${size === 'sm' ? 'pub-logo-sm' : ''}`}
+        src={content.logo}
+        alt={content.brandName}
+        onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = 'none')}
+      />
+    );
+  }
+  return (
+    <span className={`logo-mark ${size === 'sm' ? 'sm' : ''}`}>
+      {content.brandName.charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
 function PublicNav({ content }: { content: PageContent }) {
   const wa = whatsappLink(content.identity.whatsapp, content.identity.whatsappMessage);
   return (
     <header className="pnav">
       <div className="pnav-inner glass">
         <div className="pnav-brand">
-          <span className="logo-mark">{content.brandName.charAt(0).toUpperCase()}</span>
+          <LogoMark content={content} size="sm" />
           <span>{content.brandName}</span>
           <span className="pnav-sep">/</span>
           <span className="mono">{content.tagline}</span>
@@ -61,11 +79,20 @@ function Hero({ content }: { content: PageContent }) {
             <span className="phero-dot">·</span>
             <span>cred. BCB</span>
           </div>
+          <div className="phero-stats reveal visible delay-4">
+            {[{ n: '1.200+', l: 'clientes' }, { n: '15 anos', l: 'mercado' }, { n: '98%', l: 'satisfação' }].map((s, i) => (
+              <div className="pstat" key={i}>
+                <strong>{s.n}</strong>
+                <span className="mono">{s.l}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="phero-card-col reveal visible delay-2">
           <div className="glass phero-card" data-tilt style={{ transformStyle: 'preserve-3d' }}>
             <div className="pcard-glow" />
+            <div className="pcard-ring" />
             <div
               className="cutout-wrap"
               style={{ perspective: 1000, transform: `rotateX(${(-scroll * 6).toFixed(2)}deg) rotateY(${(scroll * 10).toFixed(2)}deg)` }}
@@ -99,6 +126,10 @@ function Hero({ content }: { content: PageContent }) {
                 <IconMapPin size={14} />
                 {identity.city}
               </p>
+            </div>
+            <div className="pcard-wa">
+              <IconWhatsapp size={15} />
+              <span>respondo em minutos</span>
             </div>
           </div>
         </div>
@@ -442,18 +473,25 @@ function Contact({ content, slug }: { content: PageContent; slug: string }) {
 
 // ============ Rodapé ============
 function PublicFooter({ content }: { content: PageContent }) {
+  const wa = whatsappLink(content.identity.whatsapp, content.identity.whatsappMessage);
   return (
     <footer className="pfooter">
       <div className="container">
         <div className="glass pfooter-card">
           <div className="pfooter-brand">
-            <span className="logo-mark">{content.brandName.charAt(0).toUpperCase()}</span>
+            <LogoMark content={content} size="sm" />
             <div>
               <strong>{content.brandName}</strong>
               <p className="mono">{content.identity.role}</p>
             </div>
           </div>
           <p className="pfooter-legal small">{content.legal}</p>
+          <div className="pfooter-bar mono">
+            <span>{content.brandName} · {content.identity.city}</span>
+            <a href={wa} target="_blank" rel="noreferrer" className="pfooter-wa">
+              <IconWhatsapp size={13} /> {content.identity.whatsapp || 'whatsapp'}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
@@ -516,8 +554,11 @@ export default function PublicConsultant() {
   if (unavailable || !data) return <Unavailable />;
 
   const { content } = data;
+  const scroll = useScrollProgress();
+  const waFloat = whatsappLink(content.identity.whatsapp, content.identity.whatsappMessage);
   return (
     <>
+      <div className="pscrollbar" style={{ transform: `scaleX(${scroll})` }} />
       <PublicNav content={content} />
       <main>
         <Hero content={content} />
@@ -531,6 +572,10 @@ export default function PublicConsultant() {
         <Contact content={content} slug={slug as string} />
       </main>
       <PublicFooter content={content} />
+      <a className="pfloat-wa" href={waFloat} target="_blank" rel="noreferrer" aria-label="WhatsApp">
+        <IconWhatsapp size={22} />
+        <span className="pfloat-wa-pulse" />
+      </a>
     </>
   );
 }

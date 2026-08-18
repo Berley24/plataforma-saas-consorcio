@@ -181,6 +181,39 @@
   gap: 26px;
 }
 
+.lmock-copy {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lmock-pill {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(180deg, var(--red-soft), var(--red-deep));
+  box-shadow: 0 8px 18px rgba(255, 59, 48, 0.3);
+}
+
+.lmock-thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.lmock-thumb {
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(255, 107, 97, 0.22), rgba(139, 92, 246, 0.14));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
 .lmock-photo {
   width: 96px;
   height: 120px;
@@ -214,6 +247,27 @@
   color: var(--red-deep);
   box-shadow: var(--shadow-lift);
   animation: floaty 6s ease-in-out infinite;
+}
+
+/* barra de credibilidade */
+.lcred {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 26px auto 0;
+  max-width: 620px;
+}
+
+.lcred-item {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
 }
 
 @media (max-width: 640px) {

@@ -53,6 +53,11 @@ export default function Landing() {
             <div className="lhero-mock reveal visible delay-4">
               <MockPreview />
             </div>
+            <div className="lcred reveal visible delay-4">
+              {['BCB', 'ANBIMA', 'Sem juros', 'PIX', 'Boleto'].map((t) => (
+                <span className="lcred-item mono" key={t}>{t}</span>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -167,11 +172,17 @@ function MockPreview() {
       <div className="glass lmock-card">
         <div className="lmock-card-inner">
           <div className="lmock-photo" />
-          <div>
+          <div className="lmock-copy">
             <div className="lmock-line w70" />
             <div className="lmock-line w90" />
             <div className="lmock-line w60" />
+            <div className="lmock-pill">falar no whatsapp</div>
           </div>
+        </div>
+        <div className="lmock-thumbs">
+          <div className="lmock-thumb" />
+          <div className="lmock-thumb" />
+          <div className="lmock-thumb" />
         </div>
       </div>
       <div className="glass lmock-chip">sem juros</div>

@@ -6,6 +6,7 @@ export interface ModuleItem { type: 'badge' | 'photo' | 'video' | 'certificate' 
 export interface FaqItem { q: string; a: string }
 
 export interface PageContent {
+  logo: string;
   brandName: string;
   tagline: string;
   hero: {
@@ -62,6 +63,20 @@ export interface Lead {
   email: string;
   message: string;
   created_at: string;
+}
+
+export interface Plan {
+  name: string;
+  price: string;
+  period: string;
+  tagline: string;
+  features: string[];
+}
+
+export interface CheckoutInfo {
+  subscriptionId: string;
+  subscription_status: string;
+  plan: Plan;
 }
 
 const TOKEN_KEY = 'consorciofy_token';

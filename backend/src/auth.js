@@ -62,6 +62,7 @@ export function getConsultantWithUser(consultantId) {
 // Conteúdo padrão de uma página de consultor (referência visual do Liquid Glass).
 export function defaultContent() {
   return {
+    logo: '',
     brandName: 'Meu Consórcio',
     tagline: 'consórcio com transparência',
     hero: {

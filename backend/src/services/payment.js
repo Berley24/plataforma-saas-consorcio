@@ -9,6 +9,22 @@ const MOCK_PRICE = process.env.MOCK_PRICE || '39.90';
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3001';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
+// Plano da plataforma (exibido na página de checkout)
+export const PLAN = {
+  name: process.env.PLAN_NAME || 'Consorciofy Pro',
+  price: MOCK_PRICE,
+  period: 'mensal',
+  tagline: 'Tudo o que você precisa para vender mais.',
+  features: [
+    'Página pública personalizável (Liquid Glass)',
+    'Editor completo de conteúdo',
+    'Foto com recorte automático de fundo',
+    'Captação e gestão de leads',
+    'Status de assinatura no painel',
+    'Suporte humano dedicado',
+  ],
+};
+
 function addDays(days) {
   const d = new Date();
   d.setDate(d.getDate() + days);
@@ -62,8 +78,8 @@ const mockProvider = {
   async createCheckout(consultant, plan) {
     const subId = `sub_mock_${Date.now()}_${consultant.id}`;
     setSubscription(consultant.id, 'pending', { subscriptionId: subId });
-    const checkoutUrl = `${BASE_URL}/api/payments/mock-checkout/${subId}`;
-    return { checkoutUrl, subscriptionId: subId, price: MOCK_PRICE };
+    const checkoutUrl = `/checkout?sub=${subId}`;
+    return { checkoutUrl, subscriptionId: subId, price: MOCK_PRICE, provider: 'mock' };
   },
 
   async approve(subId) {

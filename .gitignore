@@ -104,6 +104,11 @@
 *.log
 **/logs/
 
+# SQLite runtime & backups
+*.db-wal
+*.db-shm
+backend/backups/
+
 # Environment and secrets
 **/.env
 **/.env.local

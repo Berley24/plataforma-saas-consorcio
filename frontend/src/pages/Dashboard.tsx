@@ -47,6 +47,14 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (params.get('welcome')) setToast('Bem-vindo! Preencha seus dados e assine para publicar.');
+    else if (params.get('paid')) setToast('Pagamento aprovado! Sua página está no ar.');
+    const t = setTimeout(() => setToast(null), 6000);
+    return () => clearTimeout(t);
+  }, [params]);
 
   useEffect(() => {
     api
@@ -141,6 +149,7 @@ export default function Dashboard() {
       </div>
 
       <div className="container dash-body">
+        {toast && <div className="dash-toast">{toast}</div>}
         {/* Banner de assinatura */}
         <div className={`glass dash-banner ${status === 'blocked' ? 'banner-blocked' : statusBad ? 'banner-pay' : 'banner-ok'}`}>
           {status === 'blocked' ? (
@@ -230,6 +239,7 @@ export default function Dashboard() {
 }
 
 function StartCheckout() {
+  const nav = useNavigate();
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
   const start = async () => {
@@ -237,7 +247,8 @@ function StartCheckout() {
     setErr('');
     try {
       const d = await api.post<{ checkoutUrl: string }>('/api/payments/checkout');
-      window.location.href = d.checkoutUrl;
+      if (d.checkoutUrl.startsWith('/')) nav(d.checkoutUrl);
+      else window.location.href = d.checkoutUrl;
     } catch (e) {
       setErr((e as Error).message);
       setLoading(false);
@@ -263,8 +274,8 @@ function GeralTab({ content, set }: { content: PageContent; set: (p: Partial<Pag
       </div>
       <div className="grid-2">
         <div className="field">
-          <label>Logo</label>
-          <ImageField value={(content as { logo?: string }).logo || ''} onChange={(url) => set({ ...content, logo: url } as Partial<PageContent>)} label="Logo" />
+          <label>Logo da sua empresa ou marca pessoal</label>
+          <ImageField value={content.logo} onChange={(url) => set({ logo: url })} label="Logo" hint="PNG/SVG transparente fica perfeito. Exibida no topo da sua página." />
         </div>
       </div>
       <div className="grid-2">

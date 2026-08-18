@@ -1,9 +1,27 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware.js';
-import { getProvider, MOCK_PRICE } from '../services/payment.js';
+import { getProvider, MOCK_PRICE, PLAN } from '../services/payment.js';
 import { db } from '../db.js';
 
 const router = Router();
+
+// GET /api/payments/plan — metadados do plano (público, para a página de checkout)
+router.get('/plan', (_req, res) => res.json(PLAN));
+
+// GET /api/payments/checkout-info?sub=... — consulta o estado de um checkout em andamento
+router.get('/checkout-info', requireAuth, (req, res) => {
+  const sub = String(req.query.sub || '');
+  if (!sub) return res.status(400).json({ error: 'Falta o identificador da assinatura.' });
+  const consultant = db
+    .prepare('SELECT * FROM consultants WHERE user_id = ? AND subscription_id = ?')
+    .get(req.user.id, sub);
+  if (!consultant) return res.status(404).json({ error: 'Checkout não encontrado.' });
+  res.json({
+    subscriptionId: consultant.subscription_id,
+    subscription_status: consultant.subscription_status,
+    plan: PLAN,
+  });
+});
 
 // POST /api/payments/checkout — inicia a assinatura do consultor logado
 router.post('/checkout', requireAuth, (req, res) => {

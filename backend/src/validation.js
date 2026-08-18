@@ -112,6 +112,7 @@ export function sanitizeContent(raw) {
   const c = raw && typeof raw === 'object' ? raw : {};
 
   const content = {
+    logo: isImageUrl(c.logo),
     brandName: str(c.brandName, MAX.name),
     tagline: str(c.tagline, MAX.title),
     hero: {
