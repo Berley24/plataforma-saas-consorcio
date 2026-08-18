@@ -525,6 +525,7 @@ export default function PublicConsultant() {
   const [data, setData] = useState<PublicPage | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
+  const scroll = useScrollProgress();
 
   useEffect(() => {
     setLoading(true);
@@ -554,7 +555,6 @@ export default function PublicConsultant() {
   if (unavailable || !data) return <Unavailable />;
 
   const { content } = data;
-  const scroll = useScrollProgress();
   const waFloat = whatsappLink(content.identity.whatsapp, content.identity.whatsappMessage);
   return (
     <>
