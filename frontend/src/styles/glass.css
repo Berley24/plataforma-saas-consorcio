@@ -506,6 +506,18 @@ h4 {
   gap: 8px;
 }
 
+.nav-links-pills {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+@media (max-width: 860px) {
+  .nav-links-pills {
+    display: none;
+  }
+}
+
 /* ---------- Formulários ---------- */
 .field {
   margin-bottom: 16px;
