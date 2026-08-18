@@ -1,0 +1,605 @@
+/* Estilos específicos da página pública do consultor. */
+
+/* ---------- Navbar ---------- */
+.pnav {
+  position: sticky;
+  top: 12px;
+  z-index: 40;
+  width: 100%;
+}
+
+.pnav-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  width: calc(100% - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 12px 10px 18px;
+  border-radius: var(--radius-pill);
+}
+
+.pnav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  min-width: 0;
+}
+
+.pnav-brand > span:nth-child(2) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pnav-sep {
+  color: var(--ink-3);
+  opacity: 0.5;
+}
+
+.pnav-brand .mono {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10.5px;
+}
+
+/* ---------- Hero ---------- */
+.phero {
+  position: relative;
+  padding: 64px 0 40px;
+}
+
+.phero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.phero-copy h1 {
+  font-size: clamp(34px, 5.2vw, 58px);
+  margin: 22px 0 16px;
+  max-width: 640px;
+}
+
+.phero-sub {
+  color: var(--ink-3);
+  font-size: 18px;
+  max-width: 520px;
+  margin-bottom: 28px;
+}
+
+.phero-cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.phero-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 26px;
+  color: var(--ink-3);
+}
+
+.phero-dot {
+  color: var(--red);
+}
+
+/* Cartão de identidade */
+.phero-card-col {
+  display: flex;
+  justify-content: center;
+}
+
+.phero-card {
+  width: 320px;
+  padding: 26px 24px 26px;
+  border-radius: 42px;
+  text-align: center;
+  overflow: hidden;
+  transition: transform 0.18s ease-out;
+}
+
+.pcard-glow {
+  position: absolute;
+  top: -30%;
+  left: -20%;
+  width: 140%;
+  height: 70%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.85), transparent);
+  pointer-events: none;
+}
+
+.phero-card .cutout-wrap {
+  margin: 0 auto;
+}
+
+.cutout-img {
+  margin: 0 auto;
+}
+
+.cutout-placeholder {
+  width: 190px;
+  height: 190px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 84px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(160deg, var(--red-soft), var(--red-deep));
+  box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.4), 0 20px 40px rgba(255, 59, 48, 0.35);
+}
+
+.cutout-placeholder.lg {
+  width: 240px;
+  height: 240px;
+}
+
+.pcard-name {
+  margin-top: 20px;
+}
+
+.pcard-name h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 24px;
+}
+
+.pcard-name .mono {
+  margin-top: 4px;
+}
+
+.pcard-city {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+/* ---------- Cards ---------- */
+.ptsection {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.pcard {
+  height: 100%;
+}
+
+.pcard-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  color: var(--red);
+  background: linear-gradient(160deg, rgba(255, 59, 48, 0.12), rgba(255, 149, 0, 0.14));
+  margin-bottom: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- Passos ---------- */
+.pstep {
+  position: relative;
+}
+
+.pstep-num {
+  font-size: 13px;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+
+/* ---------- Comparativo ---------- */
+.pcomp {
+  padding: 30px;
+}
+
+.pcomp-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  margin-bottom: 18px;
+}
+
+.pcomp-win .pcomp-title {
+  color: var(--red-deep);
+}
+
+.pcomp-row {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  align-items: flex-start;
+}
+
+.pcomp-check {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(180deg, #34c759, #248a3d);
+}
+
+.pcomp-x {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  background: rgba(142, 142, 147, 0.18);
+}
+
+.pcomp-row strong {
+  font-size: 15px;
+}
+
+/* ---------- Sobre ---------- */
+.pabout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 40px;
+  padding: 40px 48px;
+  align-items: center;
+}
+
+.pabout-photo {
+  display: flex;
+  justify-content: center;
+}
+
+.pabout-img {
+  max-height: 380px;
+  width: auto;
+}
+
+.pabout-text h2 {
+  font-size: clamp(26px, 3.6vw, 38px);
+  margin: 14px 0;
+}
+
+.pabout-text p {
+  color: var(--ink-3);
+  font-size: 16.5px;
+  line-height: 1.7;
+}
+
+/* ---------- Depoimentos ---------- */
+.ptest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.ptest {
+  position: relative;
+}
+
+.ptest-quote {
+  color: rgba(255, 59, 48, 0.35);
+  margin-bottom: 14px;
+}
+
+.ptest-text {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  margin-bottom: 20px;
+}
+
+.ptest-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ptest-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(160deg, var(--red-soft), var(--red-deep));
+  flex-shrink: 0;
+}
+
+.ptest-author p {
+  margin-top: 2px;
+}
+
+.ptest-wide {
+  grid-column: span 2;
+}
+
+/* ---------- Bento ---------- */
+.pbento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.pmodule {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.pmodule-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--red);
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.pmodule-media {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-top: 4px;
+}
+
+.pmodule-badge {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.55), rgba(255, 107, 97, 0.25));
+}
+
+.pmodule-certificate {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.55), rgba(94, 92, 230, 0.18));
+}
+
+.pmodule-partner {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.55), rgba(255, 149, 0, 0.18));
+}
+
+/* ---------- FAQ ---------- */
+.pfaq {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pfaq-item {
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.pfaq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
+  text-align: left;
+}
+
+.pfaq-q svg {
+  transition: transform 0.3s var(--ease);
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.pfaq-item.open .pfaq-q svg {
+  transform: rotate(180deg);
+}
+
+.pfaq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease);
+}
+
+.pfaq-item.open .pfaq-a {
+  max-height: 400px;
+}
+
+.pfaq-a p {
+  padding: 0 24px 22px;
+  color: var(--ink-3);
+  line-height: 1.7;
+}
+
+/* ---------- Contato ---------- */
+.pcontact-card {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 40px;
+  padding: 44px 48px;
+}
+
+.pcontact-copy h2 {
+  font-size: clamp(26px, 3.4vw, 36px);
+  margin: 12px 0;
+}
+
+.pcontact-copy p {
+  color: var(--ink-3);
+  font-size: 16px;
+}
+
+.pcontact-form {
+  max-width: 460px;
+  width: 100%;
+}
+
+.pcontact-done {
+  text-align: center;
+  padding: 30px 0;
+}
+
+.pcontact-done .verified-badge {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 18px;
+}
+
+.pcontact-done h3 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.pform-error {
+  color: var(--red-deep);
+  font-size: 13.5px;
+  margin: 0 0 10px;
+}
+
+/* ---------- Rodapé ---------- */
+.pfooter {
+  padding: 40px 0 48px;
+}
+
+.pfooter-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px 32px;
+  border-radius: 26px;
+}
+
+.pfooter-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pfooter-legal {
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+/* ---------- Página indisponível / loading ---------- */
+.punavail {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+}
+
+.punavail-card {
+  max-width: 460px;
+  text-align: center;
+  padding: 48px 40px;
+}
+
+.punavail-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(180deg, var(--red-soft), var(--red-deep));
+  margin: 0 auto 22px;
+  box-shadow: 0 10px 24px rgba(255, 59, 48, 0.3);
+}
+
+.punavail-card h1 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.punavail-card p {
+  color: var(--ink-3);
+  margin-bottom: 24px;
+}
+
+.pcenter {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+}
+
+.pcenter-card {
+  padding: 40px 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 59, 48, 0.2);
+  border-top-color: var(--red);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 980px) {
+  .phero-grid,
+  .pabout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .pcontact-card {
+    grid-template-columns: 1fr;
+    padding: 32px 24px;
+  }
+
+  .ptest-grid,
+  .pbento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ptest-wide {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .ptest-grid,
+  .pbento {
+    grid-template-columns: 1fr;
+  }
+
+  .pnav-brand .mono,
+  .pnav-sep {
+    display: none;
+  }
+
+  .phero-cta .btn {
+    flex: 1;
+  }
+}
