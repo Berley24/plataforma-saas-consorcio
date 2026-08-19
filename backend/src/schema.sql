@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS consultant_content (
   updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Leads recebidos pelos formulários das páginas públicas.
+-- Leads recebidos pelos formulários e chat das páginas públicas.
 CREATE TABLE IF NOT EXISTS leads (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
   consultant_id INTEGER NOT NULL REFERENCES consultants(id) ON DELETE CASCADE,
@@ -48,6 +48,10 @@ CREATE TABLE IF NOT EXISTS leads (
   whatsapp      TEXT,
   email         TEXT,
   message       TEXT,
+  interest      TEXT,       -- categoria: carro, casa, moto, servicos, alavancagem, agro, outro
+  meeting_at    TEXT,       -- data/hora da reunião agendada (ISO)
+  meeting_notes TEXT,       -- resumo da conversa gerado pela IA
+  source        TEXT NOT NULL DEFAULT 'form',  -- 'form' | 'chat'
   created_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

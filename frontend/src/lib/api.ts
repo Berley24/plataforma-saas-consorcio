@@ -62,7 +62,25 @@ export interface Lead {
   whatsapp: string;
   email: string;
   message: string;
+  interest: string | null;
+  meeting_at: string | null;
+  meeting_notes: string | null;
+  source: string;
   created_at: string;
+}
+
+export interface ChatProfile {
+  name: string;
+  whatsapp: string;
+  value: string;
+  plazo: string;
+}
+
+export interface ChatReply {
+  reply: string;
+  intent: string;
+  ready_for_meeting: boolean;
+  profile: ChatProfile;
 }
 
 export interface Plan {

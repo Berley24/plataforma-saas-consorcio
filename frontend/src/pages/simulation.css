@@ -1,0 +1,274 @@
+/* Chat de simulação com IA (substitui o formulário de contato). */
+
+.sim {
+  border-radius: 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: min(620px, 78vh);
+}
+
+/* header */
+.sim-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.sim-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(160deg, var(--red-soft), var(--red-deep));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+}
+
+.sim-head strong {
+  display: block;
+  font-size: 15px;
+}
+
+.sim-head .mono {
+  font-size: 9.5px;
+}
+
+.sim-online {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 650;
+  color: #248a3d;
+  background: rgba(52, 199, 89, 0.14);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.sim-online i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34c759;
+  box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.2);
+}
+
+/* corpo da conversa */
+.sim-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+
+.sim-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 86%;
+}
+
+.sim-msg.bot {
+  align-self: flex-start;
+}
+
+.sim-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.sim-msg-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #fff;
+  background: linear-gradient(160deg, var(--red-soft), var(--red-deep));
+  font-size: 11px;
+}
+
+.sim-bubble {
+  padding: 11px 15px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.sim-msg.bot .sim-bubble {
+  border-bottom-left-radius: 6px;
+}
+
+.sim-msg.user .sim-bubble {
+  color: #fff;
+  background: linear-gradient(180deg, var(--red-soft), var(--red-deep));
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 8px 18px rgba(255, 59, 48, 0.24);
+}
+
+/* indicador de digitação */
+.sim-typing {
+  display: flex;
+  gap: 5px;
+  padding: 14px 16px;
+}
+
+.sim-typing i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-4);
+  animation: typing 1.2s ease-in-out infinite;
+}
+
+.sim-typing i:nth-child(2) { animation-delay: 0.18s; }
+.sim-typing i:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* sugestões rápidas */
+.sim-quick {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 16px 10px;
+}
+
+.sim-chip {
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px) saturate(160%);
+  color: var(--ink-2);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform 0.15s var(--ease), background 0.2s;
+}
+
+.sim-chip:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-1px);
+}
+
+.sim-chip:disabled {
+  opacity: 0.5;
+}
+
+/* campo de entrada */
+.sim-input {
+  display: flex;
+  gap: 10px;
+  padding: 10px 16px 16px;
+}
+
+.sim-input .input {
+  flex: 1;
+}
+
+.sim-input .btn {
+  width: 52px;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+/* agendador de reunião */
+.sim-scheduler {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  background: linear-gradient(160deg, rgba(255, 107, 97, 0.08), rgba(255, 255, 255, 0.3));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sim-sched-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.sim-sched-title svg {
+  color: var(--red);
+}
+
+.sim-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sim-slot {
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-pill);
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink-2);
+  transition: all 0.18s var(--ease);
+}
+
+.sim-slot:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.sim-slot.active {
+  color: #fff;
+  background: linear-gradient(180deg, var(--red-soft), var(--red-deep));
+  border-color: transparent;
+  box-shadow: 0 8px 18px rgba(255, 59, 48, 0.28);
+}
+
+.sim-error {
+  color: var(--red-deep);
+  font-weight: 600;
+}
+
+/* estado de sucesso após agendar */
+.sim-done {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 32px;
+}
+
+.sim-done h3 {
+  font-size: 22px;
+}
+
+.sim-done p {
+  color: var(--ink-3);
+  max-width: 340px;
+}
+
+@media (max-width: 640px) {
+  .sim {
+    height: min(680px, 80vh);
+  }
+}

@@ -7,6 +7,7 @@ import {
   IconWhatsapp, IconCheck, IconX, IconChevronDown, IconMapPin,
   IconQuote, TrustIcon, ModuleIcon,
 } from '../lib/icons';
+import SimulationChat from './SimulationChat';
 import './public.css';
 
 // ============ Navbar ============
@@ -369,101 +370,33 @@ function Faq({ content }: { content: PageContent }) {
   );
 }
 
-// ============ Formulário de contato ============
+// ============ Simulação / contato com IA ============
 function Contact({ content, slug }: { content: PageContent; slug: string }) {
   const ref = useReveal();
-  const [form, setForm] = useState({ name: '', whatsapp: '', email: '', message: '' });
-  const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-  const [error, setError] = useState('');
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setState('sending');
-    setError('');
-    try {
-      await api.post(`/api/public/${slug}/lead`, form);
-      setState('sent');
-      // abre o WhatsApp com mensagem pronta
-      const msg = `Olá! Sou ${form.name || 'um visitante'}${form.message ? ` — ${form.message}` : ''}. Vim pela sua página.`;
-      window.open(whatsappLink(content.identity.whatsapp, msg), '_blank');
-    } catch (err) {
-      setState('error');
-      setError((err as Error).message || 'Erro ao enviar.');
-    }
-  };
+  const wa = whatsappLink(content.identity.whatsapp, content.identity.whatsappMessage);
 
   return (
     <section className="section ptsection pcontact" id="contato" ref={ref}>
       <div className="container">
         <div className="glass glass-red pcontact-card">
           <div className="pcontact-copy">
-            <span className="mono">contato</span>
+            <span className="mono">simulação inteligente</span>
             <h2>{content.contact.title}</h2>
             <p>{content.contact.subtitle}</p>
+            <ul className="pcontact-list">
+              {['Carro', 'Casa / Imóvel', 'Moto', 'Serviços', 'Alavancagem', 'Agro'].map((it) => (
+                <li key={it}>
+                  <IconCheck size={14} /> {it}
+                </li>
+              ))}
+            </ul>
+            <a className="btn btn-lg" href={wa} target="_blank" rel="noreferrer">
+              <IconWhatsapp size={18} />
+              Falar direto no WhatsApp
+            </a>
           </div>
-          <div className="pcontact-form">
-            {state === 'sent' ? (
-              <div className="pcontact-done">
-                <div className="verified-badge lg">
-                  <IconCheck size={18} />
-                </div>
-                <h3>Recebido!</h3>
-                <p>Abri o WhatsApp para continuarmos a conversa.</p>
-              </div>
-            ) : (
-              <form onSubmit={submit}>
-                <div className="field">
-                  <label>Nome</label>
-                  <input
-                    className="input"
-                    required
-                    maxLength={120}
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="Seu nome"
-                  />
-                </div>
-                <div className="grid-2">
-                  <div className="field">
-                    <label>WhatsApp</label>
-                    <input
-                      className="input"
-                      inputMode="tel"
-                      maxLength={13}
-                      value={form.whatsapp}
-                      onChange={(e) => setForm({ ...form, whatsapp: e.target.value.replace(/\D/g, '') })}
-                      placeholder="(11) 99999-9999"
-                    />
-                  </div>
-                  <div className="field">
-                    <label>E-mail</label>
-                    <input
-                      className="input"
-                      type="email"
-                      maxLength={160}
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      placeholder="voce@email.com"
-                    />
-                  </div>
-                </div>
-                <div className="field">
-                  <label>Como posso ajudar?</label>
-                  <textarea
-                    className="textarea"
-                    maxLength={2000}
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="Quero simular um consórcio de…"
-                  />
-                </div>
-                {error && <p className="pform-error">{error}</p>}
-                <button className="btn btn-lg btn-block" disabled={state === 'sending'}>
-                  <IconWhatsapp size={18} />
-                  {state === 'sending' ? 'Enviando…' : content.contact.cta}
-                </button>
-              </form>
-            )}
+          <div className="pcontact-chat">
+            <SimulationChat content={content} slug={slug} />
           </div>
         </div>
       </div>

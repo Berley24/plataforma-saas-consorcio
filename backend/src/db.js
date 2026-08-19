@@ -18,6 +18,22 @@ db.exec('PRAGMA busy_timeout = 5000;');
 const schema = readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
 db.exec(schema);
 
+// Migrações leves: adiciona colunas que ainda não existem em bases antigas.
+function migrate() {
+  const cols = db.prepare('PRAGMA table_info(leads)').all().map((c) => c.name);
+  const add = (name, def) => {
+    if (!cols.includes(name)) {
+      db.exec(`ALTER TABLE leads ADD COLUMN ${name} ${def}`);
+      cols.push(name);
+    }
+  };
+  add('interest', 'TEXT');                                  // categoria (carro, casa, moto, servicos, alavancagem, agro, outro)
+  add('meeting_at', 'TEXT');                                // data/hora da reunião agendada (ISO)
+  add('meeting_notes', 'TEXT');                             // resumo da conversa/IA
+  add('source', "TEXT NOT NULL DEFAULT 'form'");            // 'form' | 'chat'
+}
+migrate();
+
 export function nowIso() {
   return new Date().toISOString();
 }
