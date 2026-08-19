@@ -13,6 +13,7 @@ const MAX = {
   title: 120,
   bio: 6000,
   legal: 6000,
+  knowledge: 20000,
 };
 
 function str(v, max = MAX.string, min = 0) {
@@ -152,6 +153,8 @@ export function sanitizeContent(raw) {
       cta: str(c.contact?.cta, 60),
     },
     legal: str(c.legal, MAX.legal),
+    // Base de conhecimento usada para treinar a IA (não aparece na página).
+    knowledge: str(c.knowledge, MAX.knowledge),
   };
 
   return content;

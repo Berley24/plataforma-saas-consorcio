@@ -86,32 +86,72 @@ function extractName(text) {
   return kept[0] ? kept.join(' ') : '';
 }
 
+function isNameAsk(text) {
+  const t = clean(text);
+  return /qual (?:e|e)\s+(?:o\s+)?seu nome|seu nome|nome\b|como (?:posso\s+)?te chamar|prazer|pode me dizer seu nome/.test(t);
+}
+
+function isLikelyName(text) {
+  const t = String(text || '').trim();
+  if (!t || t.length > 40) return false;
+  if (/\d/.test(t)) return false;
+  if (/([.,]|r\$|mil|reais|parcela|consorcio|consórcio|interesse|quero|preciso)/i.test(t)) return false;
+  const words = t.split(/\s+/);
+  if (words.length > 3) return false;
+  return words.every((w) => /^[a-záàâãéêíóôõúç]+$/i.test(w));
+}
+
 function buildProfile(messages) {
   const userMsgs = messages.filter((m) => m.role === 'user');
-  const all = userMsgs.map((m) => m.content).join(' ');
+  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant')?.content || '';
   const last = userMsgs[userMsgs.length - 1]?.content || '';
+  const all = userMsgs.map((m) => m.content).join(' ');
+
+  let name = extractName(all);
+  let category = detectCategoryFromMessages(userMsgs);
+
+  // Se perguntamos o nome e a pessoa respondeu só o nome (ex: "João"),
+  // aceite a resposta inteira como o nome — sem precisar de "sou"/"me chamo".
+  if (!name && isNameAsk(lastAssistant) && isLikelyName(last)) {
+    name = clean(last).trim();
+    // ignora essa mensagem na detecção de categoria/valor/prazo
+    category = detectCategoryFromMessages(userMsgs.slice(0, -1));
+  }
+
   return {
-    name: extractName(all),
+    name,
     whatsapp: extractPhone(last),
     value: extractValue(all),
     plazo: extractPlazo(all),
-    category: detectCategoryFromMessages(userMsgs),
+    category,
   };
 }
 
 // Fluxo roteirizado usado quando não há LLM configurado.
 function fallbackChat(messages) {
   const userMsgs = messages.filter((m) => m.role === 'user');
+  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant')?.content || '';
   const p = buildProfile(messages);
   const last = userMsgs[userMsgs.length - 1]?.content || '';
+  const firstUser = userMsgs[0]?.content || '';
 
-  const withName = p.name ? `${p.name[0].toUpperCase()}${p.name.slice(1)}` : '';
+  const withName = p.name ? p.name[0].toUpperCase() + p.name.slice(1) : '';
+  const greeted = Boolean(p.name || (isNameAsk(lastAssistant) && isLikelyName(last)));
+
+  if (!p.name) {
+    return {
+      reply: last
+        ? 'Que bom te conhecer por aqui! Antes de qualquer coisa, qual é o seu nome?'
+        : 'Olá! Sou a assistente virtual do consultor. Antes de qualquer coisa, qual é o seu nome?',
+      intent: 'outro',
+      ready_for_meeting: false,
+      profile: p,
+    };
+  }
 
   if (!p.category || p.category === 'outro') {
     return {
-      reply: last
-        ? 'Entendi! Pode me dizer melhor: você tem interesse em consórcio de carro, casa, moto, serviços, alavancagem ou agro?'
-        : 'Olá! Sou a assistente virtual do consultor. Para começarmos, conta pra mim: você tem interesse em carro, casa, moto, serviços, alavancagem ou agro?',
+      reply: `${withName}, que bom te receber por aqui! Para começarmos, conta pra mim: você tem interesse em consórcio de carro, casa, moto, serviços, alavancagem ou agro?`,
       intent: 'outro',
       ready_for_meeting: false,
       profile: p,
@@ -120,7 +160,7 @@ function fallbackChat(messages) {
 
   if (!p.value) {
     return {
-      reply: `${withName ? `${withName}, ` : ''}${CATEGORY_REPLY[p.category]}`,
+      reply: `${CATEGORY_REPLY[p.category]}`,
       intent: p.category,
       ready_for_meeting: false,
       profile: p,
@@ -129,16 +169,7 @@ function fallbackChat(messages) {
 
   if (!p.plazo) {
     return {
-      reply: `Perfeito${withName ? `, ${withName}` : ''}! E em quanto tempo você gostaria de pagar? Temos planos de 30 a 200 meses — qual prazo combina melhor com você?`,
-      intent: p.category,
-      ready_for_meeting: false,
-      profile: p,
-    };
-  }
-
-  if (!p.name) {
-    return {
-      reply: `Excelente! Resumindo: ${withName || 'você'} quer ${p.category === 'alavancagem' ? 'alavancar' : p.category === 'servicos' ? 'um plano de serviços' : 'um consórcio de ' + p.category} de ${p.value} em ${p.plazo} meses. Qual o seu nome?`,
+      reply: `Perfeito, ${withName}! E em quanto tempo você gostaria de pagar? Temos planos de 30 a 200 meses — qual prazo combina melhor com você?`,
       intent: p.category,
       ready_for_meeting: false,
       profile: p,
@@ -147,7 +178,7 @@ function fallbackChat(messages) {
 
   if (!p.whatsapp) {
     return {
-      reply: `Prazer, ${withName}! Para eu marcar uma conversa com o consultor, me passa seu WhatsApp com DDD?`,
+      reply: `Excelente, ${withName}! Resumindo: ${p.category === 'alavancagem' ? 'você quer alavancar' : p.category === 'servicos' ? 'você quer um plano de serviços' : `você quer um consórcio de ${p.category}`} de ${p.value} em ${p.plazo} meses. Para eu agendar a reunião com o consultor, me passa seu WhatsApp com DDD?`,
       intent: p.category,
       ready_for_meeting: false,
       profile: p,

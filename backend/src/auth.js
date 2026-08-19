@@ -151,5 +151,6 @@ export function defaultContent() {
       cta: 'Enviar',
     },
     legal: 'Consórcio é regulamentado pelo Banco Central do Brasil. As informações exibidas não configuram oferta, mas sim orientação sobre o produto. Cuidado com fraudes.',
+    knowledge: '',
   };
 }
