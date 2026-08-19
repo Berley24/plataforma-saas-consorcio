@@ -41,7 +41,7 @@ Acesse:
 
 - **Cadastro** → cria usuário + página com slug automático → consultor personaliza no painel → assina → página pública fica no ar.
 - **Bloqueio**: admin bloqueia por falta de pagamento/violação → `GET /api/public/:slug` responde `403 { unavailable: true }` e o visitante vê **"Página indisponível"** (sem expor erro técnico).
-- **Leads**: o formulário final valida no servidor (com rate-limit), salva no banco **e** abre o WhatsApp do consultor com mensagem pronta.
+- **Leads**: o chat de simulação (IA) conversa com o visitante, descobre o interesse (carro, casa, moto, serviços, alavancagem, agro), monta a simulação e agenda uma reunião que cai direto na aba de leads do consultor (com categoria, data/hora e resumo). Sem IA configurada, um fluxo roteirizado cumpre o mesmo papel.
 - **Editor**: identidade (logo, foto recortada, nome, WhatsApp, cidade), hero, tira de confiança, depoimentos, blocos livres (bento grid), FAQ, comparativo, contato e aviso legal. Foto de perfil tem opção de **remover fundo branco automaticamente** no cliente (flood-fill) para virar recorte flutuante.
 - **Pagamento recorrente**: serviço com provider (`backend/src/services/payment.js`). O modo padrão é `mock` (checkout de demonstração, sem cartão). Para produção:
 
@@ -55,10 +55,22 @@ PAYMENT_PROVIDER=stripe STRIPE_SECRET_KEY=... STRIPE_PRICE_ID=...
 
 A plataforma **nunca armazena número de cartão** — quem processa é o provedor; o banco só guarda `customer_id` / `subscription_id` / status.
 
+### IA de simulação (opcional)
+
+O chat usa um LLM compatível com a API da OpenAI. Sem chave, um fluxo roteirizado assume. Configure no backend:
+
+```bash
+USER_LLM_API_KEY=sua-chave-aqui
+USER_LLM_BASE_URL=https://api.deepseek.com/v1   # qualquer endpoint OpenAI-compatível
+USER_LLM_MODEL=deepseek-chat
+```
+
+> A chave é **sua** (variáveis `USER_LLM_*` do projeto). A plataforma não usa/expõe chaves do ambiente do agente.
+
 ## API (resumo)
 
 - `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`
-- `GET  /api/public/:slug`, `POST /api/public/:slug/lead`
+- `GET  /api/public/:slug`, `POST /api/public/:slug/lead`, `POST /api/public/:slug/chat`
 - `GET|PUT /api/consultant/page`, `PUT /api/consultant/slug`, `GET /api/consultant/leads`
 - `POST /api/upload` (imagem, com validação de tipo)
 - `POST /api/payments/checkout`, `POST /api/payments/webhook`, `GET /api/payments/status`

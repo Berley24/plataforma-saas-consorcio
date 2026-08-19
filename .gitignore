@@ -109,6 +109,9 @@
 *.db-shm
 backend/backups/
 
+# Uploads de usuário (logo, fotos) — ficam no disco, não no repositório
+backend/uploads/
+
 # Environment and secrets
 **/.env
 **/.env.local

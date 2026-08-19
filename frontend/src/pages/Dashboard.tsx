@@ -469,7 +469,7 @@ function FaqTab({ content, set }: { content: PageContent; set: (p: Partial<PageC
 function ContatoTab({ content, set }: { content: PageContent; set: (p: Partial<PageContent>) => void }) {
   return (
     <>
-      <Section title="Formulário final" subtitle="O formulário salva o lead no banco e abre seu WhatsApp com mensagem pronta.">
+      <Section title="Simulação / contato final" subtitle="A seção mostra um chat de IA que capta interesse, simula e agenda reunião. Os textos abaixo aparecem ao lado do chat.">
         <div className="grid-3">
           <Text label="Título" value={content.contact.title} onChange={(v) => set({ contact: { ...content.contact, title: v } })} max={120} />
           <Text label="Subtítulo" value={content.contact.subtitle} onChange={(v) => set({ contact: { ...content.contact, subtitle: v } })} max={300} />
@@ -526,35 +526,65 @@ function ContatoTab({ content, set }: { content: PageContent; set: (p: Partial<P
 }
 
 // ---------- Leads ----------
+const INTEREST_LABEL: Record<string, string> = {
+  carro: 'Carro',
+  casa: 'Casa / Imóvel',
+  moto: 'Moto',
+  servicos: 'Serviços',
+  alavancagem: 'Alavancagem',
+  agro: 'Agro',
+};
+
+function fmtMeeting(iso: string) {
+  const d = new Date(iso);
+  return `${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+}
+
 function LeadsTab({ leads }: { leads: Lead[] }) {
   if (!leads.length) {
     return (
-      <Section title="Leads" subtitle="Os contatos enviados pelo formulário da sua página aparecem aqui.">
+      <Section title="Leads" subtitle="Os contatos captados pelo chat de simulação e pelo formulário aparecem aqui.">
         <p className="muted">Nenhum lead ainda. Compartilhe sua página!</p>
       </Section>
     );
   }
+  const sorted = [...leads].sort((a, b) => {
+    if (!!a.meeting_at !== !!b.meeting_at) return a.meeting_at ? -1 : 1;
+    return b.id - a.id;
+  });
   return (
-    <Section title={`Leads (${leads.length})`} subtitle="Contatos recebidos no formulário da sua página.">
+    <Section title={`Leads (${leads.length})`} subtitle="Interesse, simulação e reuniões agendadas captadas na sua página.">
       <div className="table-wrap">
         <table className="glass">
           <thead>
             <tr>
               <th>Nome</th>
               <th>WhatsApp</th>
-              <th>E-mail</th>
-              <th>Mensagem</th>
+              <th>Interesse</th>
+              <th>Reunião</th>
+              <th>Simulação</th>
               <th>Data</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {leads.map((l) => (
-              <tr key={l.id}>
-                <td><strong>{l.name}</strong></td>
+            {sorted.map((l) => (
+              <tr key={l.id} className={l.meeting_at ? 'lead-meeting' : ''}>
+                <td><strong>{l.name}</strong>{l.source === 'chat' && <span className="lead-tag">chat IA</span>}</td>
                 <td className="mono">{l.whatsapp || '—'}</td>
-                <td>{l.email || '—'}</td>
-                <td className="muted small">{l.message?.slice(0, 60) || '—'}</td>
+                <td>
+                  {l.interest ? (
+                    <span className="status-pill status-active">{INTEREST_LABEL[l.interest] || l.interest}</span>
+                  ) : '—'}
+                </td>
+                <td>
+                  {l.meeting_at ? (
+                    <span className="lead-meeting-badge">
+                      <IconCheck size={12} /> {fmtMeeting(l.meeting_at)}
+                    </span>
+                  ) : '—'}
+                </td>
+                <td className="muted small">{l.meeting_notes || l.message?.slice(0, 60) || '—'}</td>
                 <td className="mono">{displayDate(l.created_at)}</td>
                 <td>
                   {l.whatsapp && (

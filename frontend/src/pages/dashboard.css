@@ -302,6 +302,42 @@
   accent-color: var(--red);
 }
 
+/* ---------- Leads ---------- */
+.lead-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0068d9;
+  background: rgba(10, 132, 255, 0.14);
+  vertical-align: middle;
+}
+
+.lead-meeting {
+  background: linear-gradient(90deg, rgba(52, 199, 89, 0.08), transparent);
+}
+
+.lead-meeting-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 650;
+  color: #248a3d;
+  background: rgba(52, 199, 89, 0.16);
+  white-space: nowrap;
+}
+
+.lead-meeting-badge svg {
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .dash-nav {
     padding: 12px 16px;

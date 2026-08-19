@@ -166,6 +166,14 @@ export const IconSparkle = ({ size = 18, className }: IconProps) => (
   </svg>
 );
 
+export const IconCalendar = ({ size = 20, className }: IconProps) => (
+  <svg {...base(size)} className={className}>
+    <rect x="3" y="5" width="18" height="16" rx="3" />
+    <path d="M3 9h18M8 3v4M16 3v4" />
+    <path d="m9 15 2 2 4-4" />
+  </svg>
+);
+
 const ICONS: Record<string, (p: IconProps) => JSX.Element> = {
   shield: IconShield,
   rocket: IconRocket,
