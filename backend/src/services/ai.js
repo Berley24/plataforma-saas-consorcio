@@ -103,20 +103,26 @@ function isLikelyName(text) {
 
 function buildProfile(messages) {
   const userMsgs = messages.filter((m) => m.role === 'user');
-  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant')?.content || '';
   const last = userMsgs[userMsgs.length - 1]?.content || '';
   const all = userMsgs.map((m) => m.content).join(' ');
 
   let name = extractName(all);
-  let category = detectCategoryFromMessages(userMsgs);
 
-  // Se perguntamos o nome e a pessoa respondeu só o nome (ex: "João"),
-  // aceite a resposta inteira como o nome — sem precisar de "sou"/"me chamo".
-  if (!name && isNameAsk(lastAssistant) && isLikelyName(last)) {
-    name = clean(last).trim();
-    // ignora essa mensagem na detecção de categoria/valor/prazo
-    category = detectCategoryFromMessages(userMsgs.slice(0, -1));
+  // Se em ALGUM momento perguntamos o nome e a resposta seguinte foi só o nome
+  // (ex: "João"), aceite essa resposta como o nome — sem precisar de "sou"/"me chamo".
+  // Isso evita perder o nome nas turnas seguintes do fluxo.
+  if (!name) {
+    for (let i = 0; i < messages.length - 1; i++) {
+      const m = messages[i];
+      const next = messages[i + 1];
+      if (m.role === 'assistant' && isNameAsk(m.content) && next.role === 'user' && isLikelyName(next.content)) {
+        name = clean(next.content).trim();
+        break;
+      }
+    }
   }
+
+  let category = detectCategoryFromMessages(userMsgs);
 
   return {
     name,
@@ -130,13 +136,10 @@ function buildProfile(messages) {
 // Fluxo roteirizado usado quando não há LLM configurado.
 function fallbackChat(messages) {
   const userMsgs = messages.filter((m) => m.role === 'user');
-  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant')?.content || '';
   const p = buildProfile(messages);
   const last = userMsgs[userMsgs.length - 1]?.content || '';
-  const firstUser = userMsgs[0]?.content || '';
 
   const withName = p.name ? p.name[0].toUpperCase() + p.name.slice(1) : '';
-  const greeted = Boolean(p.name || (isNameAsk(lastAssistant) && isLikelyName(last)));
 
   if (!p.name) {
     return {
@@ -209,7 +212,8 @@ function systemPrompt(consultant, content) {
   const c = content || {};
   const identity = c.identity || {};
   const safe = (v, d) => String(v || d).slice(0, 400);
-  return [
+  const knowledge = String(c.knowledge || '').trim().slice(0, 20000);
+  const lines = [
     `Você é ${safe(identity.name, 'o consultor')}, consultor(a) de consórcio da marca "${safe(c.brandName, 'Consorciofy')}" em ${safe(identity.city, 'Brasil')}.`,
     `Você conversa com visitantes no site para descobrir o interesse e agendar uma reunião com ${safe(identity.name, 'o consultor')}.`,
     '',
@@ -222,21 +226,39 @@ function systemPrompt(consultant, content) {
     '- agro (tratores, máquinas, implementos)',
     '- outro',
     '',
-    'REGRA DE OURO: o objetivo é agendar uma reunião. Conduza em etapas, UMA pergunta por vez:',
+    'REGRA DE OURO: o objetivo é agendar uma reunião. Conduza em etapas, UMA pergunta por vez, e SEMPRE nessa ordem:',
+    '0) ANTES de tudo, peça o nome da pessoa.',
     '1) descubra a categoria de interesse;',
     '2) descubra o valor aproximado do bem/serviço;',
     '3) descubra o prazo desejado em meses;',
-    '4) peça o nome da pessoa;',
-    '5) peça o WhatsApp com DDD;',
-    '6) só então sinalize que está pronto para agendar.',
+    '4) peça o WhatsApp com DDD;',
+    '5) só então sinalize que está pronto para agendar.',
+    '',
+    'SOBRE O NOME: quando você perguntar "qual é o seu nome?" e a pessoa responder apenas com um nome',
+    'ou sobrenome (ex.: "João" ou "Maria Silva"), SEM usar "sou" ou "me chamo", considere isso como o nome dela.',
+    'Não pergunte de novo nem trate como resposta a outra pergunta.',
+    '',
+    'SOBRE INFORMAÇÕES (IMPORTANTE — NUNCA DÊ INFORMAÇÃO FALSA):',
+    '- Responda apenas com base na "BASE DE CONHECIMENTO" abaixo e no que a pessoa informou.',
+    '- Nunca invente números: taxa de administração, prazos, valores mínimos de parcela, regras de contemplação,',
+    '  percentuais ou condições que não estejam na base de conhecimento.',
+    '- Se não souber a resposta com certeza, diga algo como: "Isso eu prefiro confirmar com o(a) consultor(a),',
+    '  mas posso deixar sua reunião agendada para ele(a) te explicar tudo direitinho."',
+    '- Fato geral permitido: consórcio não cobra juros (apenas taxa de administração) e não exige entrada.',
     '',
     'SOBRE A CONVERSA:',
     '- Responda sempre em português do Brasil, de forma natural, calorosa e humana. NADA de respostas de robô.',
     '- Use frases curtas (1 a 3). Faça uma pergunta por vez.',
-    '- Mencione que consórcio não cobra juros (apenas taxa de administração) quando for natural.',
     '- Nunca invente nome, telefone, valores ou informações que a pessoa não informou.',
     '- Se a pessoa responder algo fora do tema, conduza de volta com empatia.',
     '',
+  ];
+  if (knowledge) {
+    lines.push('BASE DE CONHECIMENTO DO CONSULTOR (use somente isto para falar de condições, taxas, prazos e produtos):');
+    lines.push(knowledge);
+    lines.push('');
+  }
+  lines.push(
     `Contexto sobre ${safe(identity.name, 'o consultor')}: ${safe(c.about && c.about.bio, '')}`,
     '',
     'SAÍDA: responda APENAS com um objeto JSON, sem markdown, neste formato:',
@@ -244,8 +266,9 @@ function systemPrompt(consultant, content) {
     '- "reply": a mensagem que será exibida ao visitante.',
     '- "intent": a categoria detectada.',
     '- "ready_for_meeting": true SOMENTE quando nome, whatsapp e intenção já foram informados.',
-    '- "profile": preencha apenas campos que a pessoa já informou (não invente).',
-  ].join('\n');
+    '- "profile": preencha apenas campos que a pessoa já informou (não invente).'
+  );
+  return lines.join('\n');
 }
 
 async function callLLM(messages) {

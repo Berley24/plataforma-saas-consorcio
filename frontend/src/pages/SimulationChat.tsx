@@ -61,7 +61,7 @@ export default function SimulationChat({ content, slug }: { content: PageContent
     setMsgs([
       {
         role: 'assistant',
-        content: `Olá! Eu sou o(a) assistente virtual do(a) ${identity.name}. Vamos descobrir qual consórcio combina com você? Você tem interesse em carro, casa, moto, serviços, alavancagem ou agro?`,
+        content: `Olá! Eu sou o(a) assistente virtual do(a) ${identity.name}. Antes de qualquer coisa, qual é o seu nome?`,
       },
     ]);
   }, [identity.name]);
@@ -77,6 +77,9 @@ export default function SimulationChat({ content, slug }: { content: PageContent
       .join(' ');
     return QUICK.filter((q) => !said.includes(q.text.slice(5, 18).toLowerCase()));
   }, [msgs]);
+
+  // só mostra sugestões de categoria depois que a pessoa já deu o nome
+  const hasName = Boolean(profile.name || (ready && name) || msgs.some((m) => m.role === 'user' && /^(sou|me chamo|meu nome)/i.test(m.content)));
 
   const send = async (text?: string) => {
     const t = (text ?? input).trim();
@@ -240,11 +243,15 @@ export default function SimulationChat({ content, slug }: { content: PageContent
           {!ready && (
             <>
               <div className="sim-quick">
-                {shownQuick.map((q) => (
-                  <button key={q.label} className="sim-chip" onClick={() => send(q.text)} disabled={busy}>
-                    {q.label}
-                  </button>
-                ))}
+                {hasName &&
+                  shownQuick.map((q) => (
+                    <button key={q.label} className="sim-chip" onClick={() => send(q.text)} disabled={busy}>
+                      {q.label}
+                    </button>
+                  ))}
+                {!hasName && (
+                  <span className="mono small muted sim-hint">Escreva seu nome para começar.</span>
+                )}
               </div>
               <div className="sim-input">
                 <input

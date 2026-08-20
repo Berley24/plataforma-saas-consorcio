@@ -34,6 +34,7 @@ export interface PageContent {
   faq: FaqItem[];
   contact: { title: string; subtitle: string; cta: string };
   legal: string;
+  knowledge: string;
 }
 
 export interface PublicPage {

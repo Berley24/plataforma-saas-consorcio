@@ -303,6 +303,25 @@
 }
 
 /* ---------- Leads ---------- */
+.ta-knowledge {
+  min-height: 280px;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.ai-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+
+.ai-steps strong {
+  color: var(--red);
+  margin-right: 4px;
+}
+
 .lead-tag {
   display: inline-block;
   margin-left: 8px;

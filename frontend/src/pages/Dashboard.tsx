@@ -109,6 +109,7 @@ export default function Dashboard() {
       { id: 'modulos', label: 'Blocos' },
       { id: 'faq', label: 'FAQ' },
       { id: 'contato', label: 'Contato' },
+      { id: 'ia', label: 'IA' },
       { id: 'leads', label: 'Leads' },
     ],
     []
@@ -218,6 +219,9 @@ export default function Dashboard() {
           )}
           {tab === 'contato' && (
             <ContatoTab content={content} set={set} />
+          )}
+          {tab === 'ia' && (
+            <AiTab content={content} set={set} />
           )}
           {tab === 'leads' && (
             <LeadsTab leads={leads} />
@@ -520,6 +524,44 @@ function ContatoTab({ content, set }: { content: PageContent; set: (p: Partial<P
             <button className="btn btn-sm btn-secondary" onClick={() => set({ comparison: { ...content.comparison, financing: [...content.comparison.financing, { title: '', text: '' }] } })}><IconPlus size={14} /> ponto</button>
           </div>
         </div>
+      </Section>
+    </>
+  );
+}
+
+// ---------- IA / Treinamento ----------
+function AiTab({ content, set }: { content: PageContent; set: (p: Partial<PageContent>) => void }) {
+  const n = content.knowledge?.length || 0;
+  return (
+    <>
+      <Section
+        title="Treinar a IA"
+        subtitle="Escreva aqui informações VERDADEIRAS sobre o seu trabalho. O assistente do seu site usa somente esta base (e o que o visitante disser) para responder — assim ele nunca inventa taxa, prazo ou condição."
+      >
+        <div className="field">
+          <label>Base de conhecimento da IA</label>
+          <textarea
+            className="textarea ta-knowledge"
+            maxLength={20000}
+            value={content.knowledge || ''}
+            onChange={(e) => set({ knowledge: e.target.value })}
+            placeholder={'Exemplo do que escrever:\n\n- Trabalho com consórcios de carro, moto, imóvel, serviços, alavancagem e agro.\n- Administradora parceira: ABC Consórcios (regulada pelo Banco Central).\n- Taxa de administração: 15% do valor do bem, diluída nas parcelas.\n- Parcelas a partir de R$ 300, prazos de 30 a 200 meses.\n- Não há entrada e não cobro juros.\n- Atendo todo o Brasil pelo WhatsApp.'}
+          />
+        </div>
+        <p className="mono small muted mb-2">{n.toLocaleString('pt-BR')} / 20.000 caracteres</p>
+        <p className="small muted">
+          Dicas: mencione taxas, prazos, valores mínimos, administradoras, regiões atendidas e o que você vende.
+          Quanto mais completo, mais precisa a resposta. A IA também avisa quando não sabe e sugere agendar uma reunião com você.
+        </p>
+      </Section>
+      <Section title="Como o assistente funciona" subtitle="O fluxo que o visitante encontra na sua página.">
+        <ol className="ai-steps small">
+          <li><strong>1.</strong> O assistente pede o <strong>nome</strong> da pessoa primeiro.</li>
+          <li><strong>2.</strong> Descobre o interesse: carro, casa, moto, serviços, alavancagem ou agro.</li>
+          <li><strong>3.</strong> Pergunta o valor aproximado e o prazo desejado.</li>
+          <li><strong>4.</strong> Pede o WhatsApp e oferece agendar uma <strong>reunião</strong> com você.</li>
+          <li><strong>5.</strong> A reunião (dia, horário, interesse e resumo) cai na aba <strong>Leads</strong>.</li>
+        </ol>
       </Section>
     </>
   );
